@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Todo Lists Dashboard</title>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="icon" type="image/png" href="todo_logo3.png">
   <style>
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -35,13 +35,13 @@
       font-weight: bold;
     }
 
-    .close:hover,
-    .close:focus {
+    .close:hover, .close:focus {
       color: black;
       text-decoration: none;
       cursor: pointer;
     }
 
+    /* Button Styles */
     button {
       padding: 10px 15px;
       margin: 5px;
@@ -56,7 +56,7 @@
     }
 
     #sync-btn {
-      background-color: #4CAF50; 
+      background-color: #4CAF50;
       position: absolute;
       top: 10px;
       right: 10px;
@@ -64,14 +64,14 @@
     }
 
     header {
-      background-color: #FFFFFF; 
-      color: black; /* Change this to black */
+      background-color: #FFFFFF;
+      color: black;
       padding: 10px;
       text-align: center;
     }
 
     header h1 {
-      color: black; /* Set the text color to black */
+      color: black;
     }
 
     #user-name {
@@ -85,24 +85,25 @@
     }
   </style>
 </head>
-
 <body>
+
   <div class="container">
-    <!--<button id="sync-btn">Sync</button>-->
     <header>
       <h1>Todo Lists Dashboard</h1>
     </header>
+
+    <!-- Add Todo Form -->
     <form id="add-todo-form">
       <input type="text" id="add-todo-input" placeholder="Add a new todo...">
       <button type="submit" id="add-todo-button">+</button>
     </form>
-    <ul class="todo-list" id="todo-list"></ul>
-    <footer>
-      <!--<p>Instructions for use...</p>
-    </footer>
 
-     Modal for Login/Register
-    <!--<div id="login-modal" class="modal">
+    <ul class="todo-list" id="todo-list"></ul>
+
+    <div id="user-name"></div>
+
+    <!-- Modal for Login/Register -->
+    <div id="login-modal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Login</h2>
@@ -134,139 +135,143 @@
         </div>
         <button id="register">Register</button>
       </div>
-    </div> -->
-
-    <div id="user-name"></div>
-
-    <script>
-      const addTodoForm = document.querySelector('#add-todo-form');
-      const addTodoInput = document.querySelector('#add-todo-input');
-      const todoList = document.querySelector('#todo-list');
-      const modal = document.querySelector('#login-modal');
-      const closeModal = document.querySelector('.close');
-      const login = document.querySelector('#login');
-      const register = document.querySelector('#register');
-      const usernameInput = document.querySelector('#username');
-      const registerUsernameInput = document.querySelector('#register-username');
-      const userNameDisplay = document.querySelector('#user-name');
-      const syncBtn = document.querySelector('#sync-btn');
-      const passwordInput = document.querySelector('#password');
-      const registerPasswordInput = document.querySelector('#register-password');
-      const rememberMeCheckbox = document.querySelector('#remember-me');
-      const agreementCheckbox = document.querySelector('#agreement');
-
-      // Load todos from local storage
-      function loadTodos() {
-        const todos = JSON.parse(localStorage.getItem('todos')) || [];
-        todos.forEach(todo => {
-          addTodoItem(todo.text, todo.completed);
-        });
-      }
-
-      // Add a todo item
-      function addTodoItem(todoText, completed = false) {
-        const todoItem = document.createElement('li');
-        todoItem.classList.add('todo-item');
-        const todoCheckbox = document.createElement('input');
-        todoCheckbox.type = 'checkbox';
-        todoCheckbox.checked = completed;
-        const todoLabel = document.createElement('label');
-        todoLabel.textContent = todoText;
-        const todoDeleteButton = document.createElement('label');
-        todoDeleteButton.textContent = 'X';
-        todoDeleteButton.classList.add('delete-button');
-        todoItem.appendChild(todoCheckbox);
-        todoItem.appendChild(todoLabel);
-        todoItem.appendChild(todoDeleteButton);
-        todoList.appendChild(todoItem);
-
-        // Event listener for delete button
-        todoDeleteButton.addEventListener('click', function () {
-          todoItem.remove();
-          saveTodos();
-        });
-
-        // Event listener for checkbox
-        todoCheckbox.addEventListener('change', function () {
-          saveTodos();
-        });
-      }
-
-      // Save todos to local storage
-      function saveTodos() {
-        const todos = Array.from(todoList.children).map(item => ({
-          text: item.querySelector('label').textContent,
-          completed: item.querySelector('input[type="checkbox"]').checked,
-        }));
-        localStorage.setItem('todos', JSON.stringify(todos));
-      }
-
-      // Open modal
-      document.addEventListener('keydown', function (event) {
-        if (event.key === "Enter") {
-          modal.style.display = "block"; 
-        }
-      });
-
-      // Close modal
-      closeModal.onclick = function () {
-        modal.style.display = "none";
-      };
-
-      // Close modal if outside of it
-      window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-
-      // Login functionality
-      login.onclick = function () {
-        const username = usernameInput.value;
-        const password = passwordInput.value;
-        if (username && password) {
-          userNameDisplay.textContent = `Logged in as: ${username}`;
-          modal.style.display = "none";
-          usernameInput.value = '';
-          passwordInput.value = '';
-        }
-      };
-
-      // Register functionality
-      register.onclick = function () {
-        const registerUsername = registerUsernameInput.value;
-        const registerPassword = registerPasswordInput.value;
-        if (registerUsername && registerPassword && agreementCheckbox.checked) {
-          userNameDisplay.textContent = `Registered as: ${registerUsername}`;
-          modal.style.display = "none";
-          registerUsernameInput.value = '';
-          registerPasswordInput.value = '';
-        } else {
-          alert("You must agree to the terms and conditions.");
-        }
-      };
-
-      // Add event listener to the form to add a new todo
-      addTodoForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const todoText = addTodoInput.value;
-        if (todoText.trim()) {
-          addTodoItem(todoText)
-          addTodoInput.value = '';
-          saveTodos();
-        }
-      });
-
-      // Sync button functionality
-      //syncBtn.onclick = function () {
-        //saveTodos();
-        //alert('Todos synchronized!');
-      //};
-
-      // Load todos on page load
-      window.onload = loadTodos;
-
-    </script>
+    </div>
   </div>
+
+  <script>
+    // Select DOM elements
+    const addTodoForm = document.querySelector('#add-todo-form');
+    const addTodoInput = document.querySelector('#add-todo-input');
+    const todoList = document.querySelector('#todo-list');
+    const modal = document.querySelector('#login-modal');
+    const closeModal = document.querySelector('.close');
+    const login = document.querySelector('#login');
+    const register = document.querySelector('#register');
+    const usernameInput = document.querySelector('#username');
+    const registerUsernameInput = document.querySelector('#register-username');
+    const userNameDisplay = document.querySelector('#user-name');
+    const syncBtn = document.querySelector('#sync-btn');
+    const passwordInput = document.querySelector('#password');
+    const registerPasswordInput = document.querySelector('#register-password');
+    const rememberMeCheckbox = document.querySelector('#remember-me');
+    const agreementCheckbox = document.querySelector('#agreement');
+
+    // Load todos from local storage
+    function loadTodos() {
+      const todos = JSON.parse(localStorage.getItem('todos')) || [];
+      todos.forEach(todo => {
+        addTodoItem(todo.text, todo.completed);
+      });
+    }
+
+    // Add a todo item
+    function addTodoItem(todoText, completed = false) {
+      const todoItem = document.createElement('li');
+      todoItem.classList.add('todo-item');
+      
+      const todoCheckbox = document.createElement('input');
+      todoCheckbox.type = 'checkbox';
+      todoCheckbox.checked = completed;
+      
+      const todoLabel = document.createElement('label');
+      todoLabel.textContent = todoText;
+      
+      const todoDeleteButton = document.createElement('label');
+      todoDeleteButton.textContent = 'X';
+      todoDeleteButton.classList.add('delete-button');
+
+      todoItem.appendChild(todoCheckbox);
+      todoItem.appendChild(todoLabel);
+      todoItem.appendChild(todoDeleteButton);
+      todoList.appendChild(todoItem);
+
+      // Event listener for delete button
+      todoDeleteButton.addEventListener('click', function () {
+        todoItem.remove();
+        saveTodos();
+      });
+
+      // Event listener for checkbox
+      todoCheckbox.addEventListener('change', function () {
+        saveTodos();
+      });
+    }
+
+    // Save todos to local storage
+    function saveTodos() {
+      const todos = Array.from(todoList.children).map(item => ({
+        text: item.querySelector('label').textContent,
+        completed: item.querySelector('input[type="checkbox"]').checked,
+      }));
+      localStorage.setItem('todos', JSON.stringify(todos));
+    }
+
+    // Open modal on Enter key press
+    document.addEventListener('keydown', function (event) {
+      if (event.key === "Enter") {
+        modal.style.display = "block";
+      }
+    });
+
+    // Close modal
+    closeModal.onclick = function () {
+      modal.style.display = "none";
+    };
+
+    // Close modal if clicking outside
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    // Login functionality
+    login.onclick = function () {
+      const username = usernameInput.value;
+      const password = passwordInput.value;
+      if (username && password) {
+        userNameDisplay.textContent = `Logged in as: ${username}`;
+        modal.style.display = "none";
+        usernameInput.value = '';
+        passwordInput.value = '';
+      }
+    };
+
+    // Register functionality
+    register.onclick = function () {
+      const registerUsername = registerUsernameInput.value;
+      const registerPassword = registerPasswordInput.value;
+      if (registerUsername && registerPassword && agreementCheckbox.checked) {
+        userNameDisplay.textContent = `Registered as: ${registerUsername}`;
+        modal.style.display = "none";
+        registerUsernameInput.value = '';
+        registerPasswordInput.value = '';
+      } else {
+        alert("You must agree to the terms and conditions.");
+      }
+    };
+
+    // Add new todo on form submission
+    addTodoForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const todoText = addTodoInput.value;
+      if (todoText.trim()) {
+        addTodoItem(todoText);
+        addTodoInput.value = '';
+        saveTodos();
+      }
+    });
+
+    // Sync button functionality (uncomment if needed)
+    // syncBtn.onclick = function () {
+    //   saveTodos();
+    //   alert('Todos synchronized!');
+    // };
+
+    // Load todos on page load
+    window.onload = loadTodos;
+  </script>
+
 </body>
 </html>
+``
