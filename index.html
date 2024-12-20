@@ -74,12 +74,10 @@
     const syncBtn = document.querySelector('#sync-btn');
 
     // Assume user is already logged in (you can modify this logic as needed)
-    const loggedInUser = "JohnDoe";  // Example logged-in user
+    //const loggedInUser = "JohnDoe";  // Example logged-in user
 
-    // Display logged-in user's name (You can change this to load from localStorage if needed)
-    userNameDisplay.textContent = `Logged in as: ${loggedInUser}`;
+    //userNameDisplay.textContent = `Logged in as: ${loggedInUser}`;
 
-    // Load todos from local storage
     function loadTodos() {
       const todos = JSON.parse(localStorage.getItem('todos')) || [];
       todos.forEach(todo => {
